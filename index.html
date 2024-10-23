@@ -1,6 +1,3 @@
-<script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-messaging.js"></script>
-
 <input type="checkbox" id="night">Night Notifications</input><br>
 <input type="checkbox" id="dawn">Dawn Notifications</input><br>
 <input type="checkbox" id="boss">Boss Notifications</input><br>
@@ -9,19 +6,26 @@
 <button id="save">Save</button>
 <button id="disable">Disable Notifications</button>
 
-<script>
+<script type="module">
+	// import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+	import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-messaging.js"
+
 	const NOTIFICATIONS_ENDPOINT = `https://tl-notifications.beemerwt.workers.dev`;
-
-	const firebaseConfig = {
-		apiKey: "AIzaSyDE9ScBcjn3cWe3QAkfJjhAqml_zx4L8lw",
-		authDomain: "tl-notifications-7457a.firebaseapp.com",
-		projectId: "tl-notifications-7457a",
-		storageBucket: "tl-notifications-7457a.appspot.com",
-		messagingSenderId: "172526363830",
-		appId: "1:172526363830:web:68d8cf2a83227d4acdb217"
-	};
-
 	const FIREBASE_PUBLIC_KEY = 'BFS3keQ352mCG46syS6J40qudaLb66czVzlpFC62SjOAkHbyBgDpmwH5VxSkL_lQww6YOOXuxtt0d4veD82-TWU';
+
+	const STATUS_URL = "https://iid.googleapis.com/iid/info/<FCM_REGISTRATION_TOKEN>";
+	const SUB_URL = "https://iid.googleapis.com/iid/v1:batchAdd";
+	const UNSUB_URL = "https://iid.googleapis.com/iid/v1:batchRemove";
+	const TOPIC_URL = "https://iid.googleapis.com/iid/v1/projects/tl-notifications-7457a/messages:send";
+
+	function post(path, data) {
+		return fetch(`${NOTIFICATIONS_ENDPOINT}${path}`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data),
+		});
+	}
+
 	const nightCheckbox = document.getElementById('night');
 	const dawnCheckbox = document.getElementById('dawn');
 	const bossCheckbox = document.getElementById('boss');
@@ -29,6 +33,8 @@
 	const stoneCheckbox = document.getElementById('stone');
 	const saveButton = document.getElementById('save');
 	const disableButton = document.getElementById('disable');
+
+	const messaging = getMessaging();
 
 	saveButton.addEventListener('click', async () => {
 		const night = nightCheckbox.checked;
@@ -38,32 +44,40 @@
 		const stone = stoneCheckbox.checked;
 		console.log("Saving", { night, dawn, boss, event, stone });
 
+		let token;
 		if (Notification.permission !== 'granted') {
-			Notification.requestPermission().then(permission => {
-				if (permission === 'granted') {
-					console.log('Notification permission granted.');
-					// You can now subscribe to push notifications
-				} else {
-					console.log('Notification permission denied.');
-				}
-			});
+			const permission = await Notification.requestPermission();
+			if (permission === 'granted') {
+				console.log('Notification permission granted.');
+				token = await getToken(messaging, { vapidKey: FIREBASE_PUBLIC_KEY });
+			} else {
+				console.log('Notification permission denied.');
+			}
 		}
 
-		await fetch(`${NOTIFICATIONS_ENDPOINT}/`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				notifications: Notification.permission === 'granted',
-				night, dawn, boss, event, stone
-			}),
+		if (!token) {
+			console.log("No notification token");
+			return;
+		}
+
+		const response = await post(`/`, {
+			notifications: true,
+			token,
+			night, dawn, boss, event, stone
 		});
 	});
 
 	disableButton.addEventListener('click', async () => {
-		await fetch(`${NOTIFICATIONS_ENDPOINT}/`, {
-			method: 'DELETE',
+		if (Notification.permission !== 'granted') {
+			console.log("User is not subbed to notifications");
+			return;
+		}
+
+		// incase it hasn't already been fetched
+		const token = await getToken(messaging, { vapidKey: FIREBASE_PUBLIC_KEY });
+		const response = await post('/', {
+			notifications: false,
+			notificationToken,
 		});
 	});
 </script>
