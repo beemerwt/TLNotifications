@@ -7,9 +7,8 @@
 <button id="disable">Disable Notifications</button>
 
 <script type="module">
-	// import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-	import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-messaging.js"
-
+	import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+	import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-messaging.js";
 	const NOTIFICATIONS_ENDPOINT = `https://tl-notifications.beemerwt.workers.dev`;
 	const FIREBASE_PUBLIC_KEY = 'BFS3keQ352mCG46syS6J40qudaLb66czVzlpFC62SjOAkHbyBgDpmwH5VxSkL_lQww6YOOXuxtt0d4veD82-TWU';
 
@@ -18,13 +17,17 @@
 	const UNSUB_URL = "https://iid.googleapis.com/iid/v1:batchRemove";
 	const TOPIC_URL = "https://iid.googleapis.com/iid/v1/projects/tl-notifications-7457a/messages:send";
 
-	function post(path, data) {
-		return fetch(`${NOTIFICATIONS_ENDPOINT}${path}`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(data),
-		});
-	}
+	const firebaseConfig = {
+		apiKey: "AIzaSyDE9ScBcjn3cWe3QAkfJjhAqml_zx4L8lw",
+		authDomain: "tl-notifications-7457a.firebaseapp.com",
+		projectId: "tl-notifications-7457a",
+		storageBucket: "tl-notifications-7457a.appspot.com",
+		messagingSenderId: "172526363830",
+		appId: "1:172526363830:web:68d8cf2a83227d4acdb217"
+	};
+
+	const firebase = initializeApp(firebaseConfig);
+	const messaging = getMessaging(firebase);
 
 	const nightCheckbox = document.getElementById('night');
 	const dawnCheckbox = document.getElementById('dawn');
@@ -34,7 +37,13 @@
 	const saveButton = document.getElementById('save');
 	const disableButton = document.getElementById('disable');
 
-	const messaging = getMessaging();
+	function post(path, data) {
+		return fetch(`${NOTIFICATIONS_ENDPOINT}${path}`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data),
+		});
+	}
 
 	saveButton.addEventListener('click', async () => {
 		const night = nightCheckbox.checked;
