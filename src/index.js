@@ -46,21 +46,20 @@ saveButton.addEventListener('click', async () => {
 	const boss = bossCheckbox.checked;
 	const event = eventCheckbox.checked;
 	const stone = stoneCheckbox.checked;
-	console.log("Saving", { night, dawn, boss, event, stone });
 
-	let token;
 	if (Notification.permission !== 'granted') {
 		const permission = await Notification.requestPermission();
 		if (permission === 'granted') {
 			console.log('Notification permission granted.');
-			token = await getToken(messaging, {
-				serviceWorkerRegistration: swRegistration,
-				vapidKey: FIREBASE_PUBLIC_KEY
-			});
 		} else {
 			console.log('Notification permission denied.');
 		}
 	}
+
+	const token = await getToken(messaging, {
+		serviceWorkerRegistration: swRegistration,
+		vapidKey: FIREBASE_PUBLIC_KEY
+	});
 
 	if (!token) {
 		console.log("No notification token");
@@ -72,6 +71,12 @@ saveButton.addEventListener('click', async () => {
 		token,
 		night, dawn, boss, event, stone
 	});
+
+	if (response.ok) {
+		console.log("Saved settings", { night, dawn, boss, event, stone });
+	} else {
+		console.error("Failed to save settings", response);
+	}
 });
 
 disableButton.addEventListener('click', async () => {
