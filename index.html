@@ -1,0 +1,69 @@
+<script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-messaging.js"></script>
+
+<input type="checkbox" id="night">Night Notifications</input><br>
+<input type="checkbox" id="dawn">Dawn Notifications</input><br>
+<input type="checkbox" id="boss">Boss Notifications</input><br>
+<input type="checkbox" id="event">Event Notifications</input><br>
+<input type="checkbox" id="stone">Boonstone/Riftstone Notifications</input><br>
+<button id="save">Save</button>
+<button id="disable">Disable Notifications</button>
+
+<script>
+	const NOTIFICATIONS_ENDPOINT = `https://tl-notifications.beemerwt.workers.dev`;
+
+	const firebaseConfig = {
+		apiKey: "AIzaSyDE9ScBcjn3cWe3QAkfJjhAqml_zx4L8lw",
+		authDomain: "tl-notifications-7457a.firebaseapp.com",
+		projectId: "tl-notifications-7457a",
+		storageBucket: "tl-notifications-7457a.appspot.com",
+		messagingSenderId: "172526363830",
+		appId: "1:172526363830:web:68d8cf2a83227d4acdb217"
+	};
+
+	const FIREBASE_PUBLIC_KEY = 'BFS3keQ352mCG46syS6J40qudaLb66czVzlpFC62SjOAkHbyBgDpmwH5VxSkL_lQww6YOOXuxtt0d4veD82-TWU';
+	const nightCheckbox = document.getElementById('night');
+	const dawnCheckbox = document.getElementById('dawn');
+	const bossCheckbox = document.getElementById('boss');
+	const eventCheckbox = document.getElementById('event');
+	const stoneCheckbox = document.getElementById('stone');
+	const saveButton = document.getElementById('save');
+	const disableButton = document.getElementById('disable');
+
+	saveButton.addEventListener('click', async () => {
+		const night = nightCheckbox.checked;
+		const dawn = dawnCheckbox.checked;
+		const boss = bossCheckbox.checked;
+		const event = eventCheckbox.checked;
+		const stone = stoneCheckbox.checked;
+		console.log("Saving", { night, dawn, boss, event, stone });
+
+		if (Notification.permission !== 'granted') {
+			Notification.requestPermission().then(permission => {
+				if (permission === 'granted') {
+					console.log('Notification permission granted.');
+					// You can now subscribe to push notifications
+				} else {
+					console.log('Notification permission denied.');
+				}
+			});
+		}
+
+		await fetch(`${NOTIFICATIONS_ENDPOINT}/`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				notifications: Notification.permission === 'granted',
+				night, dawn, boss, event, stone
+			}),
+		});
+	});
+
+	disableButton.addEventListener('click', async () => {
+		await fetch(`${NOTIFICATIONS_ENDPOINT}/`, {
+			method: 'DELETE',
+		});
+	});
+</script>
