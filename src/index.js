@@ -32,6 +32,14 @@ function post(path, data) {
 	});
 }
 
+const swRegistration = async () => {
+	try {
+		await navigator.serviceWorker.register('/TLNotifications/firebase-messaging-sw.js');
+	} catch (err) {
+		console.error(err);
+	}
+}
+
 saveButton.addEventListener('click', async () => {
 	const night = nightCheckbox.checked;
 	const dawn = dawnCheckbox.checked;
@@ -45,7 +53,10 @@ saveButton.addEventListener('click', async () => {
 		const permission = await Notification.requestPermission();
 		if (permission === 'granted') {
 			console.log('Notification permission granted.');
-			token = await getToken(messaging, { vapidKey: FIREBASE_PUBLIC_KEY });
+			token = await getToken(messaging, {
+				serviceWorkerRegistration: swRegistration,
+				vapidKey: FIREBASE_PUBLIC_KEY
+			});
 		} else {
 			console.log('Notification permission denied.');
 		}
