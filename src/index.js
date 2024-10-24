@@ -14,7 +14,9 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const messaging = async () => (await isSupported()) && getMessaging(app)
+
+// await isSupported()
+const messaging = getMessaging(app);
 
 const nightCheckbox = document.getElementById('night');
 const dawnCheckbox = document.getElementById('dawn');
@@ -34,7 +36,7 @@ function post(path, data) {
 
 const swRegistration = async () => {
 	try {
-		await navigator.serviceWorker.register('/TLNotifications/firebase-messaging-sw.js');
+		const serviceWorkerRegistration = await navigator.serviceWorker.register('/TLNotifications/firebase-messaging-sw.js');
 	} catch (err) {
 		console.error(err);
 	}
@@ -47,17 +49,15 @@ saveButton.addEventListener('click', async () => {
 	const event = eventCheckbox.checked;
 	const stone = stoneCheckbox.checked;
 
-	if (Notification.permission !== 'granted') {
-		const permission = await Notification.requestPermission();
-		if (permission === 'granted') {
-			console.log('Notification permission granted.');
-		} else {
-			console.log('Notification permission denied.');
-		}
+	const permission = await Notification.requestPermission();
+	if (permission !== 'granted') {
+		alert("Cannot save settings without approving notification permission");
+		return;
 	}
 
+	const serviceWorkerRegistration = await swRegistration();
 	const token = await getToken(messaging, {
-		serviceWorkerRegistration: swRegistration,
+		serviceWorkerRegistration,
 		vapidKey: FIREBASE_PUBLIC_KEY
 	});
 
