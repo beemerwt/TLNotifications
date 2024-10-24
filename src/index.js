@@ -27,21 +27,23 @@ const saveButton = document.getElementById('save');
 const disableButton = document.getElementById('disable');
 
 async function getValues(token) {
-	const url = new URL(`${NOTIFICATIONS_ENDPOINT}/`);
-	url.searchParams.append('token', token);
+	const response = await fetch(`${NOTIFICATIONS_ENDPOINT}/`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ token })
+	});
 
-	const response = await fetch(url);
 	const data = await response.json();
 	return data;
 }
 
 async function unsubscribe(token) {
 	const url = new URL(`${NOTIFICATIONS_ENDPOINT}/`);
-	url.searchParams.append('notifications', false);
-	url.searchParams.append('token', token);
 
 	const response = await fetch(url, {
-		method: 'DELETE'
+		method: 'DELETE',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ token })
 	});
 
 	const data = await response.json();
@@ -56,7 +58,7 @@ async function updateValues(token, night = false, dawn = false, boss = false, ev
 
 	const values = { token, night, dawn, boss, event, stone };
 	const response = await fetch(`${NOTIFICATIONS_ENDPOINT}/`, {
-		method: 'POST',
+		method: 'PUT',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify(values)
 	});
