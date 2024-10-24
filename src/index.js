@@ -26,11 +26,49 @@ const stoneCheckbox = document.getElementById('stone');
 const saveButton = document.getElementById('save');
 const disableButton = document.getElementById('disable');
 
-async function post(path, data) {
-	const response = await fetch(`${NOTIFICATIONS_ENDPOINT}${path}`, {
+async function getValues(token) {
+	const url = new URL(`${NOTIFICATIONS_ENDPOINT}/`);
+	url.searchParams.append('token', token);
+
+	const response = await fetch(url);
+	const data = await response.json();
+	return data;
+}
+
+async function unsubscribe(token) {
+	const url = new URL(`${NOTIFICATIONS_ENDPOINT}/`);
+	url.searchParams.append('notifications', false);
+	url.searchParams.append('token', token);
+
+	const response = await fetch(url, {
+		method: 'DELETE'
+	});
+
+	const data = await response.json();
+	return data;
+}
+
+async function updateValues(token, enabled, night = false, dawn = false, boss = false, event = false, stone = false) {
+	if (!token) {
+		console.error("No token provided");
+		return;
+	}
+
+	const url = new URL(`${NOTIFICATIONS_ENDPOINT}/`);
+	url.searchParams.append('token', token);
+	const values = {
+		notifications: enabled,
+		night,
+		dawn,
+		boss,
+		event,
+		stone
+	};
+
+	const response = await fetch(url, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify(data),
+		body: JSON.stringify(values)
 	});
 
 	console.log(`Response Status: ${response.statusText} (${response.status})`);
@@ -42,7 +80,7 @@ async function post(path, data) {
 	return responseData;
 }
 
-const swRegistration = async () => {
+async function getServiceWorkerRegistration() {
 	try {
 		const serviceWorkerRegistration = await navigator.serviceWorker.register('/TLNotifications/dist/messaging.bundle.js');
 		return serviceWorkerRegistration;
@@ -52,19 +90,13 @@ const swRegistration = async () => {
 }
 
 saveButton.addEventListener('click', async () => {
-	const night = nightCheckbox.checked;
-	const dawn = dawnCheckbox.checked;
-	const boss = bossCheckbox.checked;
-	const event = eventCheckbox.checked;
-	const stone = stoneCheckbox.checked;
-
 	const permission = await Notification.requestPermission();
 	if (permission !== 'granted') {
 		alert("Cannot save settings without approving notification permission");
 		return;
 	}
 
-	const serviceWorkerRegistration = await swRegistration();
+	const serviceWorkerRegistration = await getServiceWorkerRegistration();
 	const token = await getToken(messaging, {
 		serviceWorkerRegistration,
 		vapidKey: FIREBASE_PUBLIC_KEY
@@ -75,14 +107,11 @@ saveButton.addEventListener('click', async () => {
 		return;
 	}
 
-	const data = await post(`/`, {
-		notifications: true,
-		token,
-		night, dawn, boss, event, stone
-	});
+	const response = await updateValues(token, true, nightCheckbox.checked,
+		dawnCheckbox.checked, bossCheckbox.checked, eventCheckbox.checked, stoneCheckbox.checked);
 
-	if (data && data.error) {
-		console.error("Failed to save settings", data.error);
+	if (response && response.error) {
+		console.error("Failed to save settings", response.error);
 		return;
 	}
 });
@@ -95,13 +124,29 @@ disableButton.addEventListener('click', async () => {
 
 	// incase it hasn't already been fetched
 	const token = await getToken(messaging, { vapidKey: FIREBASE_PUBLIC_KEY });
-	const data = await post('/', {
-		notifications: false,
-		notificationToken,
-	});
-
-	if (data && data.error) {
-		console.error("Failed to save settings", data.error);
+	const response = await unsubscribe(token);
+	if (response && response.error) {
+		console.error("Failed to save settings", response.error);
 		return;
 	}
 });
+
+(async () => {
+	const token = await getToken(messaging, { vapidKey: FIREBASE_PUBLIC_KEY });
+	if (!token) {
+		console.log("No token");
+		return;
+	}
+
+	const values = await getValues(token);
+	if (values && values.error) {
+		console.error("Failed to get values", values.error);
+		return;
+	}
+
+	nightCheckbox.checked = values.night;
+	dawnCheckbox.checked = values.dawn;
+	bossCheckbox.checked = values.boss;
+	eventCheckbox.checked = values.event;
+	stoneCheckbox.checked = values.stone;
+})
