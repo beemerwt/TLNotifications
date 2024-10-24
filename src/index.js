@@ -26,12 +26,20 @@ const stoneCheckbox = document.getElementById('stone');
 const saveButton = document.getElementById('save');
 const disableButton = document.getElementById('disable');
 
-function post(path, data) {
-	return fetch(`${NOTIFICATIONS_ENDPOINT}${path}`, {
+async function post(path, data) {
+	const response = await fetch(`${NOTIFICATIONS_ENDPOINT}${path}`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify(data),
 	});
+
+	console.log(`Response Status: ${response.statusText} (${response.status})`);
+	console.log("Response Headers: ", response.headers);
+	console.log("Response Type", response.type);
+	console.log("Was Redirected? ", response.redirected);
+
+	const responseData = await response.json();
+	return responseData;
 }
 
 const swRegistration = async () => {
@@ -67,16 +75,15 @@ saveButton.addEventListener('click', async () => {
 		return;
 	}
 
-	const response = await post(`/`, {
+	const data = await post(`/`, {
 		notifications: true,
 		token,
 		night, dawn, boss, event, stone
 	});
 
-	if (response.ok) {
-		console.log("Saved settings", { night, dawn, boss, event, stone });
-	} else {
-		console.error("Failed to save settings", response);
+	if (data && data.error) {
+		console.error("Failed to save settings", data.error);
+		return;
 	}
 });
 
@@ -88,8 +95,13 @@ disableButton.addEventListener('click', async () => {
 
 	// incase it hasn't already been fetched
 	const token = await getToken(messaging, { vapidKey: FIREBASE_PUBLIC_KEY });
-	const response = await post('/', {
+	const data = await post('/', {
 		notifications: false,
 		notificationToken,
 	});
+
+	if (data && data.error) {
+		console.error("Failed to save settings", data.error);
+		return;
+	}
 });
