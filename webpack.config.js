@@ -2,13 +2,14 @@ const path = require('path');
 
 module.exports = {
 	mode: 'production',
-	entry: './src/index.js',
-	output: {
-		filename: 'bundle.js',
-		path: path.resolve(__dirname, 'dist'),
+	entry: {
+		index: './src/index.js',
+		messaging: './src/firebase-messaging-sw.js',
 	},
-	resolve: {
-		extensions: ['.js']
+	output: {
+		filename: '[name].bundle.js',
+		path: path.resolve(__dirname, 'dist'),
+		clean: true,
 	},
 	module: {
 		rules: [
@@ -23,5 +24,5 @@ module.exports = {
 				},
 			},
 		],
-	},
+	}
 };

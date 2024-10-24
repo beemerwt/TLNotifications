@@ -36,7 +36,8 @@ function post(path, data) {
 
 const swRegistration = async () => {
 	try {
-		const serviceWorkerRegistration = await navigator.serviceWorker.register('/TLNotifications/firebase-messaging-sw.js');
+		const serviceWorkerRegistration = await navigator.serviceWorker.register('/TLNotifications/dist/messaging.bundle.js');
+		return serviceWorkerRegistration;
 	} catch (err) {
 		console.error(err);
 	}
