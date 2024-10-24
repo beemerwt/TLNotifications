@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getMessaging, getToken } from "firebase/messaging";
+import { getMessaging, getToken as getFirebaseToken } from "firebase/messaging";
 
 const NOTIFICATIONS_ENDPOINT = `https://tl-notifications.beemerwt.workers.dev`;
 const FIREBASE_PUBLIC_KEY = 'BFS3keQ352mCG46syS6J40qudaLb66czVzlpFC62SjOAkHbyBgDpmwH5VxSkL_lQww6YOOXuxtt0d4veD82-TWU';
@@ -70,12 +70,30 @@ async function updateValues(token, night = false, dawn = false, boss = false, ev
 	return responseData;
 }
 
+let serviceWorkerRegistration;
 async function getServiceWorkerRegistration() {
+	if (serviceWorkerRegistration)
+		return serviceWorkerRegistration;
+
 	try {
-		const serviceWorkerRegistration = await navigator.serviceWorker.register('/TLNotifications/dist/messaging.bundle.js');
+		serviceWorkerRegistration = await navigator.serviceWorker.register('/TLNotifications/dist/messaging.bundle.js');
 		return serviceWorkerRegistration;
 	} catch (err) {
-		console.error(err);
+		console.error("Problem getting service worker registration", err);
+	}
+}
+
+async function getToken() {
+	try {
+		const serviceWorkerRegistration = await getServiceWorkerRegistration();
+		const token = getFirebaseToken(messaging, {
+			serviceWorkerRegistration,
+			vapidKey: FIREBASE_PUBLIC_KEY
+		});
+
+		return token;
+	} catch (err) {
+		console.error("Problem getting token", err);
 	}
 }
 
@@ -86,18 +104,14 @@ saveButton.addEventListener('click', async () => {
 		return;
 	}
 
-	const serviceWorkerRegistration = await getServiceWorkerRegistration();
-	const token = await getToken(messaging, {
-		serviceWorkerRegistration,
-		vapidKey: FIREBASE_PUBLIC_KEY
-	});
+	const token = await getToken();
 
 	if (!token) {
 		console.log("No notification token");
 		return;
 	}
 
-	const response = await updateValues(token, true, nightCheckbox.checked,
+	const response = await updateValues(token, nightCheckbox.checked,
 		dawnCheckbox.checked, bossCheckbox.checked, eventCheckbox.checked, stoneCheckbox.checked);
 
 	if (response && response.error) {
@@ -113,7 +127,7 @@ disableButton.addEventListener('click', async () => {
 	}
 
 	// incase it hasn't already been fetched
-	const token = await getToken(messaging, { vapidKey: FIREBASE_PUBLIC_KEY });
+	const token = await getToken();
 	const response = await unsubscribe(token);
 	if (response && response.error) {
 		console.error("Failed to save settings", response.error);
@@ -122,7 +136,12 @@ disableButton.addEventListener('click', async () => {
 });
 
 (async () => {
-	const token = await getToken(messaging, { vapidKey: FIREBASE_PUBLIC_KEY });
+	if (Notification.permission !== 'granted') {
+		console.log("User is not subbed to notifications");
+		return;
+	}
+
+	const token = await getToken();
 	if (!token) {
 		console.log("No token");
 		return;
