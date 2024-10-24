@@ -48,24 +48,14 @@ async function unsubscribe(token) {
 	return data;
 }
 
-async function updateValues(token, enabled, night = false, dawn = false, boss = false, event = false, stone = false) {
+async function updateValues(token, night = false, dawn = false, boss = false, event = false, stone = false) {
 	if (!token) {
 		console.error("No token provided");
 		return;
 	}
 
-	const url = new URL(`${NOTIFICATIONS_ENDPOINT}/`);
-	url.searchParams.append('token', token);
-	const values = {
-		notifications: enabled,
-		night,
-		dawn,
-		boss,
-		event,
-		stone
-	};
-
-	const response = await fetch(url, {
+	const values = { token, night, dawn, boss, event, stone };
+	const response = await fetch(`${NOTIFICATIONS_ENDPOINT}/`, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify(values)
@@ -149,4 +139,4 @@ disableButton.addEventListener('click', async () => {
 	bossCheckbox.checked = values.boss;
 	eventCheckbox.checked = values.event;
 	stoneCheckbox.checked = values.stone;
-})
+})();
