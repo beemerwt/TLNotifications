@@ -167,6 +167,18 @@ disableButton.addEventListener('click', async () => {
 		console.error("Failed to save settings", response.error);
 		return;
 	}
+
+	nightCheckbox.checked = false;
+	dawnCheckbox.checked = false;
+	bossCheckbox.checked = false;
+	eventCheckbox.checked = false;
+	stoneCheckbox.checked = false;
+
+	nightAdvance.value = 0;
+	dawnAdvance.value = 0;
+	bossAdvance.value = 0;
+	eventAdvance.value = 0;
+	stoneAdvance.value = 0;
 });
 
 testButton.addEventListener('click', async () => {
