@@ -193,19 +193,20 @@ testButton.addEventListener('click', async () => {
 
 	// TODO: Input validation so that value is always a number
 	// and always an increment of 5
+	const { settings } = values;
 
-	nightCheckbox.checked = values.night.enabled;
-	nightAdvance.value = values.night.advance;
+	nightCheckbox.checked = settings.night.enabled;
+	nightAdvance.value = settings.night.advance;
 
-	dawnCheckbox.checked = values.dawn.enabled;
-	dawnAdvance.value = values.dawn.advance;
+	dawnCheckbox.checked = settings.dawn.enabled;
+	dawnAdvance.value = settings.dawn.advance;
 
-	bossCheckbox.checked = values.boss.enabled;
-	bossAdvance.value = values.boss.advance;
+	bossCheckbox.checked = settings.boss.enabled;
+	bossAdvance.value = settings.boss.advance;
 
-	eventCheckbox.checked = values.event.enabled;
-	eventAdvance.value = values.event.advance
+	eventCheckbox.checked = settings.event.enabled;
+	eventAdvance.value = settings.event.advance
 
-	stoneCheckbox.checked = values.stone.enabled;
-	stoneAdvance.value = values.stone.advance;
+	stoneCheckbox.checked = settings.stone.enabled;
+	stoneAdvance.value = settings.stone.advance;
 })();
