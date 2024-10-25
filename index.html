@@ -11,31 +11,42 @@
 <body>
 <div class="wrapper">
 	<div class="settingrow">
-		<input type="checkbox" id="night">Night Notifications</input>
+		<div class="check">
+			<input type="checkbox" id="night">Night Notifications</input>
+		</div>
+
 		<input type="number" id="night-advance" min="0" max="60" step="5" value="0"></input>
 	</div>
 
 	<div class="settingrow">
-		<input type="checkbox" id="dawn">Dawn Notifications</input>
+		<div class="check">
+			<input type="checkbox" id="dawn">Dawn Notifications</input>
+		</div>
 		<input type="number" id="dawn-advance" min="0" max="60" step="5" value="0"></input>
 	</div>
 
 	<div class="settingrow">
-		<input type="checkbox" id="boss">Boss Notifications</input>
+		<div class="check">
+			<input type="checkbox" id="boss">Boss Notifications</input>
+		</div>
 		<input type="number" id="boss-advance" min="0" max="60" step="5" value="0"></input>
 	</div>
 
 	<div class="settingrow">
-		<input type="checkbox" id="event">Event Notifications</input>
+		<div class="check">
+			<input type="checkbox" id="event">Event Notifications</input>
+		</div>
 		<input type="number" id="event-advance" min="0" max="60" step="5" value="0"></input>
 	</div>
 
 	<div class="settingrow">
-		<input type="checkbox" id="stone">Boon/Riftstone Notifications</input>
+		<div class="check">
+			<input type="checkbox" id="stone">War Notifications</input>
+		</div>
 		<input type="number" id="stone-advance" min="0" max="60" step="5" value="0"></input>
 	</div>
 
-	<div class="settingrow">
+	<div class="buttonrow">
 		<button id="save">Save</button>
 		<button id="disable">Disable</button>
 		<button id="test">Test</button>

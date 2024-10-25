@@ -2,8 +2,33 @@
 .wrapper {
   display: flex;
   flex-direction: column;
+	width: fit-content;
 }
 
 .settingrow {
-  display: inline-block;
+  display: flex;
+	justify-content: space-between;
+}
+
+.buttonrow {
+	display: flex;
+	justify-content: space-evenly;
+}
+
+.check {
+	margin-right: 10px;
+}
+
+button {
+	flex-grow: 1;
+}
+
+.buttonrow > button {
+	width: calc(33% - 4px);
+	margin-right: 4px;
+	margin-top: 4px;
+}
+
+.buttonrow > button:last-child {
+	margin-right: 0;
 }
