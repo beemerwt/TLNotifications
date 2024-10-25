@@ -8,11 +8,21 @@
 	<script defer src="dist/index.bundle.js"></script>
 </head>
 <body>
-	<input type="checkbox" id="night">Night Notifications</input><br>
-	<input type="checkbox" id="dawn">Dawn Notifications</input><br>
-	<input type="checkbox" id="boss">Boss Notifications</input><br>
-	<input type="checkbox" id="event">Event Notifications</input><br>
-	<input type="checkbox" id="stone">Boonstone/Riftstone Notifications</input><br>
+	<input type="checkbox" id="night">Night Notifications</input>
+	<input type="number" id="night-advance" min="0" max="60">5</input>
+	<br>
+	<input type="checkbox" id="dawn">Dawn Notifications</input>
+	<input type="number" id="dawn-advance" min="0" max="60">5</input>
+	<br>
+	<input type="checkbox" id="boss">Boss Notifications</input>
+	<input type="number" id="boss-advance" min="0" max="60">5</input>
+	<br>
+	<input type="checkbox" id="event">Event Notifications</input>
+	<input type="number" id="event-advance" min="0" max="60">5</input>
+	<br>
+	<input type="checkbox" id="stone">Boonstone/Riftstone Notifications</input>
+	<input type="number" id="stone-advance" min="0" max="60">5</input>
+	<br>
 	<button id="save">Save</button>
 	<button id="disable">Disable Notifications</button>
 </body>

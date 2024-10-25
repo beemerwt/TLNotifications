@@ -19,10 +19,20 @@ const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
 const nightCheckbox = document.getElementById('night');
+const nightAdvance = document.getElementById('night-advance');
+
 const dawnCheckbox = document.getElementById('dawn');
+const dawnAdvance = document.getElementById('dawn-advance');
+
 const bossCheckbox = document.getElementById('boss');
+const bossAdvance = document.getElementById('boss-advance');
+
 const eventCheckbox = document.getElementById('event');
+const eventAdvance = document.getElementById('event-advance');
+
 const stoneCheckbox = document.getElementById('stone');
+const stoneAdvance = document.getElementById('stone-advance');
+
 const saveButton = document.getElementById('save');
 const disableButton = document.getElementById('disable');
 
@@ -50,17 +60,16 @@ async function unsubscribe(token) {
 	return data;
 }
 
-async function updateValues(token, night = false, dawn = false, boss = false, event = false, stone = false) {
+async function updateValues(token, values) {
 	if (!token) {
 		console.error("No token provided");
 		return;
 	}
 
-	const values = { token, night, dawn, boss, event, stone };
 	const response = await fetch(`${NOTIFICATIONS_ENDPOINT}/`, {
 		method: 'PUT',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify(values)
+		body: JSON.stringify({ token, ...values })
 	});
 
 	console.log(`Response Status: ${response.statusText} (${response.status})`);
@@ -113,8 +122,30 @@ saveButton.addEventListener('click', async () => {
 		return;
 	}
 
-	const response = await updateValues(token, nightCheckbox.checked,
-		dawnCheckbox.checked, bossCheckbox.checked, eventCheckbox.checked, stoneCheckbox.checked);
+	const values = {
+		night: {
+			enabled: nightCheckbox.checked,
+			advance: parseInt(nightAdvance.value)
+		},
+		dawn: {
+			enabled: dawnCheckbox.checked,
+			advance: parseInt(dawnAdvance.value)
+		},
+		boss: {
+			enabled: bossCheckbox.checked,
+			advance: parseInt(bossAdvance.value)
+		},
+		event: {
+			enabled: eventCheckbox.checked,
+			advance: parseInt(eventAdvance.value)
+		},
+		stone: {
+			enabled: stoneCheckbox.checked,
+			advance: parseInt(stoneAdvance.value)
+		}
+	}
+
+	const response = await updateValues(token, values);
 
 	if (response && response.error) {
 		console.error("Failed to save settings", response.error);
@@ -155,9 +186,18 @@ disableButton.addEventListener('click', async () => {
 		return;
 	}
 
-	nightCheckbox.checked = values.night;
-	dawnCheckbox.checked = values.dawn;
-	bossCheckbox.checked = values.boss;
-	eventCheckbox.checked = values.event;
-	stoneCheckbox.checked = values.stone;
+	nightCheckbox.checked = values.night.enabled;
+	nightAdvance.value = values.night.advance;
+
+	dawnCheckbox.checked = values.dawn.enabled;
+	dawnAdvance.value = values.dawn.advance;
+
+	bossCheckbox.checked = values.boss.enabled;
+	bossAdvance.value = values.boss.advance;
+
+	eventCheckbox.checked = values.event.enabled;
+	eventAdvance.value = values.event.advance
+
+	stoneCheckbox.checked = values.stone.enabled;
+	stoneAdvance.value = values.stone.advance;
 })();
