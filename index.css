@@ -1,0 +1,9 @@
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.settingrow {
+  display: inline-block;
+}

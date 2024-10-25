@@ -3,29 +3,43 @@
 <head>
 	<meta charset='utf-8'>
 	<meta http-equiv='X-UA-Compatible' content='IE=edge'>
-	<title>Page Title</title>
+	<title>TL Notifications</title>
 	<meta name='viewport' content='width=device-width, initial-scale=1'>
+	<link rel="stylesheet" href="index.css">
 	<script defer src="dist/index.bundle.js"></script>
 </head>
 <body>
-	<input type="checkbox" id="night">Night Notifications</input>
-	<input type="number" id="night-advance" min="0" max="60" step="5" value="0"></input>
-	<br>
-	<input type="checkbox" id="dawn">Dawn Notifications</input>
-	<input type="number" id="dawn-advance" min="0" max="60" step="5" value="0"></input>
-	<br>
-	<input type="checkbox" id="boss">Boss Notifications</input>
-	<input type="number" id="boss-advance" min="0" max="60" step="5" value="0"></input>
-	<br>
-	<input type="checkbox" id="event">Event Notifications</input>
-	<input type="number" id="event-advance" min="0" max="60" step="5" value="0"></input>
-	<br>
-	<input type="checkbox" id="stone">Boonstone/Riftstone Notifications</input>
-	<input type="number" id="stone-advance" min="0" max="60" step="5" value="0"></input>
-	<br>
-	<button id="save">Save</button>
-	<button id="disable">Disable Notifications</button>
-	<button id="test">Test Notifications</button>
+	<div class="wrapper">
+		<div class="settingrow">
+			<input type="checkbox" id="night">Night Notifications</input>
+			<input type="number" id="night-advance" min="0" max="60" step="5" value="0"></input>
+		</div>
+
+		<div class="settingrow">
+			<input type="checkbox" id="dawn">Dawn Notifications</input>
+			<input type="number" id="dawn-advance" min="0" max="60" step="5" value="0"></input>
+		</div>
+
+		<div class="settingrow">
+			<input type="checkbox" id="boss">Boss Notifications</input>
+			<input type="number" id="boss-advance" min="0" max="60" step="5" value="0"></input>
+		</div>
+
+		<div class="settingrow">
+			<input type="checkbox" id="event">Event Notifications</input>
+			<input type="number" id="event-advance" min="0" max="60" step="5" value="0"></input>
+		</div>
+
+		<div class="settingrow">
+			<input type="checkbox" id="stone">Boon/Riftstone Notifications</input>
+			<input type="number" id="stone-advance" min="0" max="60" step="5" value="0"></input>
+		</div>
+
+		<div class="settingrow">
+			<button id="save">Save</button>
+			<button id="disable">Disable Notifications</button>
+		</div>
+	</div>
 </body>
 </html>
 
