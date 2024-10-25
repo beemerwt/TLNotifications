@@ -147,11 +147,12 @@ saveButton.addEventListener('click', async () => {
 	}
 
 	const response = await updateValues(token, values);
-
 	if (response && response.error) {
 		console.error("Failed to save settings", response.error);
 		return;
 	}
+
+	alert("Settings saved successfully");
 });
 
 disableButton.addEventListener('click', async () => {
@@ -179,6 +180,8 @@ disableButton.addEventListener('click', async () => {
 	bossAdvance.value = 0;
 	eventAdvance.value = 0;
 	stoneAdvance.value = 0;
+
+	alert("Unsubscribed from notifications");
 });
 
 testButton.addEventListener('click', async () => {
