@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getMessaging, getToken as getFirebaseToken } from "firebase/messaging";
+import { onMessage, getMessaging, getToken as getFirebaseToken } from "firebase/messaging";
 
 const NOTIFICATIONS_ENDPOINT = `https://tl-notifications.beemerwt.workers.dev`;
 const FIREBASE_PUBLIC_KEY = 'BFS3keQ352mCG46syS6J40qudaLb66czVzlpFC62SjOAkHbyBgDpmwH5VxSkL_lQww6YOOXuxtt0d4veD82-TWU';
