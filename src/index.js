@@ -182,7 +182,28 @@ disableButton.addEventListener('click', async () => {
 });
 
 testButton.addEventListener('click', async () => {
-	const response = await fetch(`${NOTIFICATIONS_ENDPOINT}/test`);
+	if (Notification.permission !== 'granted') {
+		alert("Cannot test notifications until you subscribe to them");
+		return;
+	}
+
+	const token = await getToken();
+	if (!token) {
+		console.log("No token");
+		return;
+	}
+
+	const response = await fetch(`${NOTIFICATIONS_ENDPOINT}/test`, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ token })
+	});
+
+	const data = await response.json();
+	if (data && data.error) {
+		alert("Failed to test notifications for an unknown reason.");
+		return;
+	}
 });
 
 onMessage(messaging, (payload) => {
