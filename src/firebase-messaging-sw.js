@@ -1,5 +1,4 @@
 import { initializeApp } from "firebase/app";
-import { onMessage } from "firebase/messaging";
 import { getMessaging } from "firebase/messaging/sw";
 import { onBackgroundMessage } from "firebase/messaging/sw";
 
@@ -13,15 +12,6 @@ const firebaseApp = initializeApp({
 });
 
 const messaging = getMessaging(firebaseApp);
-onMessage(messaging, (payload) => {
-  console.log('[firebase-messaging-sw.js] Received background message ', payload);
-
-  // Customize notification here
-	const { title, body } = payload.data;
-  const notificationOptions = { body };
-  self.registration.showNotification(title, notificationOptions);
-});
-
 onBackgroundMessage(messaging, (payload) => {
   console.log('[firebase-messaging-sw.js] Received background message ', payload);
 

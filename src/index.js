@@ -185,6 +185,15 @@ testButton.addEventListener('click', async () => {
 	const response = await fetch(`${NOTIFICATIONS_ENDPOINT}/test`);
 });
 
+onMessage(messaging, (payload) => {
+  console.log('[firebase-messaging-sw.js] Received background message ', payload);
+
+  // Customize notification here
+	const { title, body } = payload.data;
+  const notificationOptions = { body };
+	const notif = new Notification(title, notificationOptions);
+});
+
 (async () => {
 	if (Notification.permission !== 'granted') {
 		console.log("User is not subbed to notifications");
