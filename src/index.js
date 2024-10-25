@@ -35,6 +35,7 @@ const stoneAdvance = document.getElementById('stone-advance');
 
 const saveButton = document.getElementById('save');
 const disableButton = document.getElementById('disable');
+const testButton = document.getElementById('test');
 
 async function getValues(token) {
 	const response = await fetch(`${NOTIFICATIONS_ENDPOINT}/`, {
@@ -125,23 +126,23 @@ saveButton.addEventListener('click', async () => {
 	const values = {
 		night: {
 			enabled: nightCheckbox.checked,
-			advance: parseInt(nightAdvance.value)
+			advance: parseInt(nightAdvance.value) || 0
 		},
 		dawn: {
 			enabled: dawnCheckbox.checked,
-			advance: parseInt(dawnAdvance.value)
+			advance: parseInt(dawnAdvance.value) || 0
 		},
 		boss: {
 			enabled: bossCheckbox.checked,
-			advance: parseInt(bossAdvance.value)
+			advance: parseInt(bossAdvance.value) || 0
 		},
 		event: {
 			enabled: eventCheckbox.checked,
-			advance: parseInt(eventAdvance.value)
+			advance: parseInt(eventAdvance.value) || 0
 		},
 		stone: {
 			enabled: stoneCheckbox.checked,
-			advance: parseInt(stoneAdvance.value)
+			advance: parseInt(stoneAdvance.value) || 0
 		}
 	}
 
@@ -168,6 +169,10 @@ disableButton.addEventListener('click', async () => {
 	}
 });
 
+testButton.addEventListener('click', async () => {
+	const response = await fetch(`${NOTIFICATIONS_ENDPOINT}/test`);
+});
+
 (async () => {
 	if (Notification.permission !== 'granted') {
 		console.log("User is not subbed to notifications");
@@ -185,6 +190,9 @@ disableButton.addEventListener('click', async () => {
 		console.error("Failed to get values", values.error);
 		return;
 	}
+
+	// TODO: Input validation so that value is always a number
+	// and always an increment of 5
 
 	nightCheckbox.checked = values.night.enabled;
 	nightAdvance.value = values.night.advance;
