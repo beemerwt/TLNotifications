@@ -14,8 +14,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-
-// await isSupported()
 const messaging = getMessaging(app);
 
 const nightCheckbox = document.getElementById('night');
@@ -208,6 +206,15 @@ testButton.addEventListener('click', async () => {
 		return;
 	}
 });
+
+
+document.querySelectorAll('.check').forEach((div) => {
+	div.addEventListener('click', (e) => {
+		const checkbox = div.querySelector('input[type="checkbox"]');
+		checkbox.checked = !checkbox.checked;
+	});
+});
+
 
 onMessage(messaging, (payload) => {
   console.log('[firebase-messaging-sw.js] Received background message ', payload);

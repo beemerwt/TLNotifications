@@ -9,48 +9,62 @@
 	<script defer src="dist/index.bundle.js"></script>
 </head>
 <body>
-<div class="wrapper">
-	<div class="settingrow">
-		<div class="check">
-			<input type="checkbox" id="night">Night Notifications</input>
-		</div>
+<div class="container">
+	<div class="header">Notifications</div>
+	<div class="header">Advance (mins)</div>
 
-		<input type="number" id="night-advance" min="0" max="60" step="5" value="0"></input>
+	<div class="check">
+		<input type="checkbox" id="night">Night Notifications</input>
+	</div>
+	
+	<div class="advance">
+		<input type="number" id="night-advance" min="-30" max="30" step="5" value="5"></input>
 	</div>
 
-	<div class="settingrow">
-		<div class="check">
-			<input type="checkbox" id="dawn">Dawn Notifications</input>
-		</div>
-		<input type="number" id="dawn-advance" min="0" max="60" step="5" value="0"></input>
+	<div class="check">
+		<input type="checkbox" id="dawn">Dawn Notifications</input>
+	</div>
+	<div class="advance">
+		<input type="number" id="dawn-advance" min="-30" max="30" step="5" value="5"></input>
 	</div>
 
-	<div class="settingrow">
-		<div class="check">
-			<input type="checkbox" id="boss">Boss Notifications</input>
-		</div>
-		<input type="number" id="boss-advance" min="0" max="60" step="5" value="0"></input>
+	<div class="check">
+		<input type="checkbox" id="boss">Boss Notifications</input>
+	</div>
+	<div class="advance">
+		<input type="number" id="boss-advance" min="-30" max="30" step="5" value="15"></input>
 	</div>
 
-	<div class="settingrow">
-		<div class="check">
-			<input type="checkbox" id="event">Event Notifications</input>
-		</div>
-		<input type="number" id="event-advance" min="0" max="60" step="5" value="0"></input>
+	<div class="check">
+		<input type="checkbox" id="event">Event Notifications</input>
+	</div>
+	
+	<div class="advance">
+		<input type="number" id="event-advance" min="-30" max="30" step="5" value="0"></input>
 	</div>
 
-	<div class="settingrow">
-		<div class="check">
-			<input type="checkbox" id="stone">War Notifications</input>
-		</div>
-		<input type="number" id="stone-advance" min="0" max="60" step="5" value="0"></input>
+	<div class="check">
+		<input type="checkbox" id="stone">War Notifications</input>
 	</div>
 
-	<div class="buttonrow">
+	<div class="advance">
+		<input type="number" id="stone-advance" min="-30" max="30" step="5" value="30"></input>
+	</div>
+
+	<div class="buttons">
 		<button id="save">Save</button>
 		<button id="disable">Disable</button>
 		<button id="test">Test</button>
 	</div>
+</div>
+
+<div class="note">
+	<h3>Information</h3>
+	<ul>
+		<li>Negative values are handled correctly (e.g. setting event notifications to -5 will send a notification 5 minutes <b>after</b> the event starts).</li>
+		<li>All values will be rounded to the nearest 5 minute interval.</li>
+		<li>No notification can be set more than 30 minutes in advance with the exception of war notifications.</li>
+	</ul>
 </div>
 </body>
 </html>
